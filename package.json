@@ -1,0 +1,13 @@
+{
+  "name": "bot-neoxr",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@elrayyxml/baileys": "^1.0.7",
+    "axios": "^1.14.0",
+    "pino": "^10.3.1"
+  }
+}
