@@ -1,80 +1,44 @@
-Zeta Vestia Wabot
+# Zeta Vestia
 
-Zeta Vestia adalah WhatsApp Bot modular berbasis Node.js dan Baileys.
-Bot ini menggunakan sistem plugin yang terstruktur sehingga memudahkan dalam menambah atau mengedit fitur.
-
----
-
-Fitur Utama
-
-- Sistem Plugin
-  Mudah menambah atau mengedit command melalui folder plugins.
-
-- Group Manager
-  Mendukung add, kick, promote, demote, mute, dan unmute.
-
-- Anti-Link
-  Mendeteksi dan menangani pengiriman link grup lain.
-
-- Downloader
-  Mendukung download TikTok melalui API Neoxr dan Nexray.
-
-- Broadcast
-  Mengirim pesan ke semua grup yang diikuti bot.
-
-- Claim Owner
-  Sistem untuk mengambil akses owner menggunakan secret key.
+Zeta Vestia adalah WhatsApp Bot modular yang dibuat menggunakan Node.js dan Baileys. Bot ini punya sistem plugin yang rapi, jadi gampang kalau mau nambah fitur tinggal bikin file baru di folder plugins.
 
 ---
 
-Instalasi
+## Fitur Utama
 
-Prasyarat
-
-- Node.js versi 16 atau lebih baru
-- Git
-- FFmpeg
+* Sistem Plugin: Gampang buat nambah/edit command.
+* Group Manager: Kick, add, promote, demote, mute, dan unmune.
+* Anti-Link: Auto kick kalau ada yang share link grup lain.
+* Downloader: Download TikTok via Neoxr & Nexray API.
+* Broadcast: Kirim pesan ke semua grup.
+* Claim Owner: Sistem aman buat ambil alih akses owner lewat secret key.
 
 ---
 
-Langkah-langkah
+## Instalasi
 
-1. Clone repository
-   git clone https://github.com/tuyyistore/zetavestia.git
+### Prasyarat
+* Node.js v16+
+* Git
+* FFmpeg
+
+### Langkah-langkah
+1. Clone Repository
+   ```bash
+   git clone [https://github.com/tuyyistore/zetavestia.git](https://github.com/tuyyistore/zetavestia.git)
    cd zetavestia
-
-2. Install dependencies
    npm install
-
-3. Jalankan bot
-   node index.js
-
----
+   npm start
+   
 
 Konfigurasi
+* Edit file config.js dan sesuaikan:
+* ​botName: Nama bot.
+* ​ownerNumber: Nomor owner.
+​* ownerSecret: Kode rahasia buat .claimowner.
+* ​neoxrApi: API Key dari api.neoxr.eu (Opsional).
+* ​nexrayApi: API Key dari api.nexray.web.id (Opsional).
 
-export default {
-botName: 'Zeta Vestia',
-ownerNumber: '62xxxxxxxxxx',
-ownerSecret: 'your-secret-key',
 
-neoxrApi: 'API_KEY_Neoxr',
-nexrayApi: 'API_KEY_Nexray'
-}
-
----
-
-Struktur Plugin
-
-plugins/
-├── admin/
-├── owner/
-├── download/
-├── convert/
-└── tools/
-
----
-
-Author
-
-tuyyi
+## Author
+tuyyi...
