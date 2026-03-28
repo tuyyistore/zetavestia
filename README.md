@@ -22,13 +22,17 @@ Zeta Vestia adalah WhatsApp Bot modular yang dibuat menggunakan Node.js dan Bail
 * Git
 * FFmpeg
 
-Kategori Perintah Fungsi
-Umum .menu Liat daftar fitur
-  .ping Respon speed bot
-  .status Info spek & uptime
-Admin .kick Keluarin member
-  .add Tambahin member
-  .mute Kunci grup
-Owner .bc Broadcast pesan
-  .restart Reboot sistem
-Download .tiktok Video downloader
+### Langkah-langkah
+1. Clone Repository
+   ```bash
+   git clone [https://github.com/tuyyistore/zetavestia.git](https://github.com/tuyyistore/zetavestia.git)
+   cd zetavestia
+
+Konfigurasi
+Edit file config.js dan sesuaikan:
+botName: Nama bot.
+ownerNumber: Nomor owner.
+ownerSecret: Kode rahasia buat .claimowner.
+neoxrApi: API Key dari api.neoxr.eu (Opsional).
+nexrayApi: API Key dari api.nexray.web.id (Opsional).
+   
