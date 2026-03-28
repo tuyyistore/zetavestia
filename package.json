@@ -1,13 +1,15 @@
 {
-  "name": "bot-neoxr",
-  "version": "1.0.0",
+  "name": "bot-wa",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
-    "start": "node index.js"
+    "start": "node --experimental-vm-modules index.js",
+    "dev": "node --watch index.js"
   },
   "dependencies": {
     "@elrayyxml/baileys": "^1.0.7",
     "axios": "^1.14.0",
-    "pino": "^10.3.1"
+    "pino": "^10.3.1",
+    "sharp": "^0.34.5"
   }
 }

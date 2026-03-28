@@ -1,10 +1,23 @@
 export const config = {
-    botNumber: "6281913824200",      // ganti dengan nomor bot kamu (contoh 6281234567890)
-    ownerNumber: "6283121214520",    // nomor owner
+    botName: "Zeta Vestia",
+    botNumber: "6281913824200",
+    ownerNumber: "6283121214520",
+    ownerLid: ["147356553085141@lid", "6283121214520@s.whatsapp.net"],
+    ownerSecret: "ownerbot2026",
+    ownerName: "dcodetuyyi",
     prefix: ".",
-    apiKey: "",   // isi api key dari neoxr
+    apiKey: "tuyyisky",
     sessionName: "session",
-    botName: "My Bot"
+
+    // Menu
+    menuThumbnail: "https://files.catbox.moe/h6vcrv.jpg",  // ganti URL gambar thumbnail
+    footer: "Zeta Vestia v1",               // footer di semua menu
+
+    // Pesan sistem
+    ownerOnly: "Command ini hanya untuk owner bot.",
+    adminOnly: "Command ini hanya untuk admin grup.",
+    groupOnly: "Command ini hanya bisa dipakai di grup.",
+    privateOnly: "Command ini hanya bisa dipakai di chat pribadi.",
 }
 
 export default config
