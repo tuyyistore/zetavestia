@@ -2,11 +2,11 @@ export const config = {
     botName: "Zeta Vestia",
     botNumber: "6281913824200",
     ownerNumber: "6283121214520",
-    ownerLid: ["147356553085141@lid", "6283121214520@s.whatsapp.net"],
-    ownerSecret: "ownerbot2026",
+    ownerLid: ["147356553085141@lid", "6283121214520@s.whatsapp.net"], // ketik whoami di bot terus ganti 
+    ownerSecret: "ownerbot2026", // isi bebas  nanti di bot lu ketik .claimowner ownerbot2026
     ownerName: "dcodetuyyi",
     prefix: ".",
-    apiKey: "tuyyisky",
+    apiKey: "", //bisa pakek api.neoxr.my.id atau api.nexrayy.web.id
     sessionName: "session",
 
     // Menu
