@@ -27,7 +27,6 @@ Zeta Vestia adalah WhatsApp Bot modular yang dibuat menggunakan Node.js dan Bail
    ```bash
    git clone [https://github.com/tuyyistore/zetavestia.git](https://github.com/tuyyistore/zetavestia.git)
    cd zetavestia
-
    npm install
 
 Konfigurasi
@@ -38,7 +37,6 @@ ownerSecret: Kode rahasia buat .claimowner.
 neoxrApi: API Key dari api.neoxr.eu (Opsional).
 nexrayApi: API Key dari api.nexray.web.id (Opsional).
 
-pm2 start index.js --name zetavestia
 
 Author : tuyyi
    
