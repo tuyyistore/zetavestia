@@ -1,6 +1,6 @@
 {
-  "name": "bot-wa",
-  "version": "2.0.0",
+  "name": "zeta-vestia",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "start": "node --experimental-vm-modules index.js",
