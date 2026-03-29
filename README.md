@@ -25,7 +25,7 @@ Zeta Vestia adalah WhatsApp Bot modular yang dibuat menggunakan Node.js dan Bail
 ### Langkah-langkah
 1. Clone Repository
    ```bash
-   git clone [https://github.com/tuyyistore/zetavestia.git](https://github.com/tuyyistore/zetavestia.git)
+   git clone https://github.com/tuyyistore/zetavestia.git
    cd zetavestia
    npm install
    npm start
