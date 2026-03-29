@@ -11,8 +11,8 @@ const logger = pino({ level: 'silent' })
 // ─── Improved Logging (console + file bot.log) ───────────────────────────────
 async function fileLog(type, msg) {
     const time = new Date().toISOString()
-    const logText = `[\( {time}] [ \){type}] ${msg}\n`
-    console.log(`[\( {time.split('T')[1].slice(0, 8)}] [ \){type}] ${msg}`)
+    const logText = `[${time}] [${type}] ${msg}\n`
+    console.log(`[${time.split('T')[1].slice(0, 8)}] [${type}] ${msg}`)
     await appendFile('bot.log', logText).catch(() => {})
 }
 
@@ -442,7 +442,7 @@ async function startBot() {
                 const line = '─────────────────────'
                 const aliasStr = p.alias?.length ? p.alias.map(a => config.prefix + a).join(', ') : '-'
                 const teks = '```\n' +
-                    `[\( {config.prefix} \){p.name}]\n${line}\n\n` +
+                    `[${config.prefix}${p.name}]\n${line}\n\n` +
                     `Deskripsi : ${p.desc || '-'}\n` +
                     `Alias     : ${aliasStr}\n` +
                     `Cara pakai: ${p.usage || config.prefix + p.name + ' ...'}\n` +
@@ -450,7 +450,7 @@ async function startBot() {
                     `Kategori  : ${p.category || '-'}\n` +
                     `Update    : ${p.updated || '-'}\n` +
                     `Author    : ${p.author || 'dcodetuyyi'}\n` +
-                    `\( {line}\n \){config.footer || config.botName}\n\`\`\``
+                    `${line}\n${config.footer || config.botName}\n\`\`\``
                 return await sock.sendMessage(jid, { text: teks }, { quoted: m })
             }
 
