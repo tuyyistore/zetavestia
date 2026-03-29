@@ -8,13 +8,17 @@ export const config = {
     prefix: ".",
     apiKey: "tuyyisky",
     sessionName: "session",
-    evalPrefix: ["$", "!!"],
+    evalPrefix: [">", "$", "!"],
+
+    // Koneksi: true = Pairing Code | false = QR Code
+    usePairingCode: true,
+    phoneNumber: "6281913824200",   // nomor WA bot (tanpa +), dipakai saat usePairingCode: true
 
     // Menu
     menuThumbnail: "https://files.catbox.moe/h6vcrv.jpg",  // ganti URL gambar thumbnail
     menuAudio: "",                          // URL audio yang dikirim saat .menu (opsional)
     menuMsg: "",                            // pesan kustom di menu (.setmsg untuk ubah)
-    footer: "Zeta Vestia v1",               // footer di semua menu
+    footer: "Zeta Vestia v1",               // footer di semua menumu
 
     // Pesan sistem
     ownerOnly: "Command ini hanya untuk owner bot.",
