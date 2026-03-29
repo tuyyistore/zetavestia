@@ -1,6 +1,7 @@
 import { makeWASocket, useMultiFileAuthState, fetchLatestBaileysVersion, DisconnectReason, downloadMediaMessage } from '@elrayyxml/baileys'
 import pino from 'pino'
 import { join } from 'path'
+import { pathToFileURL } from 'url'
 import { readdir, copyFile, mkdir, writeFile, readFile } from 'fs/promises'
 import { existsSync } from 'fs'
 import config from './config.js'
@@ -25,6 +26,8 @@ async function loadData() {
         if (data.botName) config.botName = data.botName
         if (data.ownerName) config.ownerName = data.ownerName
         if (data.footer) config.footer = data.footer
+        if (data.menuAudio) config.menuAudio = data.menuAudio
+        if (data.menuMsg !== undefined) config.menuMsg = data.menuMsg
     } catch {}
 }
 
@@ -35,6 +38,8 @@ async function saveData() {
         botName: config.botName,
         ownerName: config.ownerName,
         footer: config.footer,
+        menuAudio: config.menuAudio || '',
+        menuMsg: config.menuMsg || '',
     }
     await writeFile(dataFile, JSON.stringify(data, null, 2))
 }
@@ -62,7 +67,8 @@ async function loadPlugins() {
         for (const file of files) {
             if (!file.endsWith('.js')) continue
             try {
-                const mod = await import(`./plugins/${file}?t=${Date.now()}`)
+                const url = pathToFileURL(join(process.cwd(), 'plugins', file)).href + '?t=' + Date.now()
+                const mod = await import(url)
                 if (mod.default) {
                     // Support export default array (multi-command per file)
                     const cmds = Array.isArray(mod.default) ? mod.default : [mod.default]
@@ -92,6 +98,24 @@ function getBody(m) {
     if (msg.extendedTextMessage?.text) return msg.extendedTextMessage.text
     if (msg.imageMessage?.caption) return msg.imageMessage.caption
     if (msg.videoMessage?.caption) return msg.videoMessage.caption
+    // ── Button / interactive response (nativeFlowMessage) ──────────────────
+    if (msg.interactiveResponseMessage) {
+        const flow = msg.interactiveResponseMessage.nativeFlowResponseMessage
+        if (flow?.paramsJson) {
+            try {
+                const p = JSON.parse(flow.paramsJson)
+                if (p.id) return p.id
+            } catch {}
+        }
+    }
+    // ── List response (single_select row id) ────────────────────────────────
+    if (msg.listResponseMessage) {
+        return msg.listResponseMessage.singleSelectReply?.selectedRowId || ''
+    }
+    // ── Buttons response (buttonId) ─────────────────────────────────────────
+    if (msg.buttonsResponseMessage) {
+        return msg.buttonsResponseMessage.selectedButtonId || ''
+    }
     return ''
 }
 
@@ -106,18 +130,25 @@ function resolveLid(jid) {
     return lidMap.get(jid) || jid
 }
 
+function normJid(jid = '') {
+    return jid.replace(/:\d+@/, '@').split('@')[0]
+}
+
 function checkOwner(sender) {
-    // cek lid langsung (grup)
+    const senderNorm = sender.replace(/:\d+@/, '@')
+    // cek exact match dulu (termasuk @lid)
     const lids = Array.isArray(config.ownerLid) ? config.ownerLid : [config.ownerLid].filter(Boolean)
-    if (lids.includes(sender)) return true
-    // cek nomor (private / resolved)
-    const resolved = resolveLid(sender)
-    const num = resolved.split('@')[0].split(':')[0].replace(/[^0-9]/g, '')
+    if (lids.some(l => l.replace(/:\d+@/, '@') === senderNorm)) return true
+    // cek resolved lid
+    const resolved = resolveLid(senderNorm).replace(/:\d+@/, '@')
+    if (lids.some(l => l.replace(/:\d+@/, '@') === resolved)) return true
+    // cek nomor
+    const num = normJid(senderNorm).replace(/[^0-9]/g, '')
     if (!num) return false
-    const owners = Array.isArray(config.ownerNumber)
+    const ownerNums = Array.isArray(config.ownerNumber)
         ? config.ownerNumber.map(n => n.replace(/[^0-9]/g, ''))
         : [config.ownerNumber.replace(/[^0-9]/g, '')]
-    return owners.some(o => o && (num === o || num.endsWith(o) || o.endsWith(num)))
+    return ownerNums.some(o => o && (num === o || num.endsWith(o) || o.endsWith(num)))
 }
 
 // Cek apakah sender adalah admin di grup
@@ -180,6 +211,7 @@ function log(type, msg) {
 async function startBot() {
     const { state, saveCreds } = await useMultiFileAuthState(config.sessionName)
     const { version } = await fetchLatestBaileysVersion()
+    config.baileysVersion = '@elrayyxml/baileys'
 
     sock = makeWASocket({
         version,
@@ -251,6 +283,28 @@ async function startBot() {
                 return
             }
 
+            // ── Eval prefix ($, !!) ───────────────────────────────────────────
+            const evalTrigger = config.evalPrefix?.find(p => body.startsWith(p))
+            if (evalTrigger) {
+                const handler = plugins.get('eval')
+                if (handler?.exec) {
+                    const evalCtx = {
+                        sock, config, plugins, antilinkGroups, saveData,
+                        args: [], text: '', sender, jid, isOwner: isOwnerSender, isGroup,
+                        isAdmin: () => isGroupAdmin(jid, sender),
+                        isBotAdmin: () => isBotAdmin(jid),
+                        getImageBuffer: () => getImageBuffer(m),
+                        body: body.slice(evalTrigger.length).trim(),
+                        reply: async (content) => {
+                            if (typeof content === 'string') return sock.sendMessage(jid, { text: content }, { quoted: m })
+                            return sock.sendMessage(jid, content, { quoted: m })
+                        }
+                    }
+                    try { await handler.exec(m, evalCtx) } catch (e) { log('ERR', 'eval: ' + e.message) }
+                }
+                return
+            }
+
             // ── Command ───────────────────────────────────────────────────────
             if (!body.startsWith(config.prefix)) return
 
@@ -260,6 +314,28 @@ async function startBot() {
 
             const handler = plugins.get(command)
             if (!handler?.exec) return
+
+            // ── Flag -h / --help ──────────────────────────────────────────────
+            if (args[0] === '-h' || args[0] === '--help') {
+                const p = handler
+                const line = '─────────────────────'
+                const aliasStr = p.alias?.length ? p.alias.map(a => config.prefix + a).join(', ') : '-'
+                const teks =
+                    '```\n' +
+                    `[ ${config.prefix}${p.name} ]\n` +
+                    `${line}\n\n` +
+                    `Deskripsi : ${p.desc || '-'}\n` +
+                    `Alias     : ${aliasStr}\n` +
+                    `Cara pakai: ${p.usage || config.prefix + p.name + ' ...'}\n` +
+                    `Kegunaan  : ${p.info || p.desc || '-'}\n` +
+                    `Kategori  : ${p.category || '-'}\n` +
+                    `Update    : ${p.updated || '-'}\n` +
+                    `Author    : ${p.author || 'dcodetuyyi'}\n` +
+                    `${line}\n` +
+                    (config.footer || config.botName) + '\n' +
+                    '```'
+                return await sock.sendMessage(jid, { text: teks }, { quoted: m })
+            }
 
             // Cooldown (skip untuk owner)
             if (!isOwnerSender && !checkCooldown(sender, command)) return
