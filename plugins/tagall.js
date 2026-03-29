@@ -2,6 +2,10 @@ export default {
     name: 'tagall',
     alias: ['mentionall', 'alltag'],
     desc: 'Tag semua member grup',
+    usage: '.tagall [pesan]',
+    info: 'Mention semua member grup sekaligus',
+    updated: '29/03/2026',
+    author: 'dcodetuyyi',
     category: 'admin',
     adminOnly: true,
 

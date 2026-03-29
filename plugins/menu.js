@@ -2,16 +2,21 @@ export default {
     name: 'menu',
     alias: ['help'],
     desc: 'Tampilkan menu bot',
+    usage: '.menu [kategori]',
+    info: 'Tampilkan menu utama atau sub-kategori tertentu',
+    updated: '29/03/2026',
+    author: 'dcodetuyyi',
     category: 'user',
 
     async exec(m, { reply, sock, jid, config, plugins, isOwner, isAdmin, isGroup, args }) {
         const prefix = config.prefix
-        const footer = config.footer || ''
+        const footer = config.footer || config.botName
         const sub = args[0]?.toLowerCase()
+        const sender = m.key.participant || m.key.remoteJid
 
-        // Cek apakah sender adalah admin grup
         const senderIsAdmin = isGroup ? await isAdmin() : false
 
+        // ─── Kumpulkan kategori & command ─────────────────────────────────────
         const categories = {}
         const seen = new Set()
 
@@ -19,7 +24,6 @@ export default {
             if (seen.has(cmd.name)) continue
             seen.add(cmd.name)
 
-            // Filter berdasarkan akses
             if (cmd.ownerOnly && !isOwner) continue
             if (cmd.adminOnly && !isOwner && !senderIsAdmin) continue
 
@@ -28,7 +32,6 @@ export default {
             categories[cat].push(cmd)
         }
 
-        // Urutkan kategori: user -> download -> admin -> owner
         const catOrder = ['user', 'download', 'admin', 'owner']
         const sortedCategories = Object.fromEntries(
             catOrder
@@ -37,21 +40,27 @@ export default {
                 .concat(Object.entries(categories).filter(([c]) => !catOrder.includes(c)))
         )
 
-        // .menu <kategori>
+        const line = '─────────────────────'
+
+        // ─── .menu <kategori> ─────────────────────────────────────────────────
         if (sub && sortedCategories[sub]) {
             const cmds = sortedCategories[sub]
+            const label = sub.charAt(0).toUpperCase() + sub.slice(1)
+
             let teks = '```\n'
-            teks += `[ ${sub.toUpperCase()} ]\n\n`
+            teks += `[ ${label.toUpperCase()} ]\n`
+            teks += `${line}\n\n`
             for (const cmd of cmds) {
-                teks += `${prefix}${cmd.name}`
-                if (cmd.alias?.length) teks += ` | ${prefix}${cmd.alias[0]}`
-                teks += `\n`
+                teks += `${prefix}${cmd.name}\n`
             }
-            teks += `\n${footer}\n\`\`\``
+            teks += `\n${line}\n`
+            teks += footer + '\n'
+            teks += '```'
+
             return reply(teks)
         }
 
-        // .menu utama
+        // ─── .menu utama — button ─────────────────────────────────────────────
         const now = new Date().toLocaleString('id-ID', {
             timeZone: 'Asia/Jakarta',
             hour12: false,
@@ -59,27 +68,78 @@ export default {
             hour: '2-digit', minute: '2-digit'
         })
 
-        let teks = '```\n'
-        teks += `${config.botName}\n`
-        teks += `Prefix : ${prefix}\n`
-        teks += `Waktu  : ${now}\n\n`
+        let totalCmd = 0
+        for (const cmds of Object.values(sortedCategories)) totalCmd += cmds.length
 
-        for (const [cat, cmds] of Object.entries(sortedCategories)) {
-            teks += `📂 ${cat.charAt(0).toUpperCase() + cat.slice(1).padEnd(8)} (${cmds.length} cmd)\n`
+        // custom message dari .setmsg (ganti {total} jika ada)
+        const senderTag = '@' + sender.split('@')[0]
+
+        const customMsg = config.menuMsg
+            ? config.menuMsg
+                .replace(/\\n/g, '\n')
+                .replace(/\+total/g, totalCmd)
+                .replace(/\+baileys/g, config.baileysVersion || '@elrayyxml/baileys')
+                .replace(/\+prefix/g, prefix)
+                .replace(/\+waktu/g, now)
+                .replace(/\+botname/g, config.botName)
+                .replace(/\+owner/g, config.ownerName)
+                .replace(/\+tag/g, senderTag)
+            : ''
+
+        const caption = customMsg ? customMsg : `*[ ${config.botName} ]*\n${line}\nPrefix  : ${prefix}\nWaktu   : ${now}\nTotal   : ${totalCmd} perintah\n${line}`
+
+        const response = {
+            ...(config.menuThumbnail ? {
+                product: {
+                    productImage: { url: config.menuThumbnail },
+                    title: config.botName,
+                    productId: config.botName.replace(/\s+/g, '_').toLowerCase(),
+                    productImageCount: 1
+                },
+                businessOwnerJid: `${config.ownerNumber}@s.whatsapp.net`,
+            } : {}),
+            caption,
+            footer,
+            header: footer,
+            mentions: [sender],
+            nativeFlowMessage: {
+                buttons: [
+                    {
+                        name: 'single_select',
+                        buttonParamsJson: JSON.stringify({
+                            title: 'Pilih Kategori',
+                            sections: Object.entries(sortedCategories).map(([cat, cmds]) => ({
+                                rows: [{
+                                    title: cat.charAt(0).toUpperCase() + cat.slice(1),
+                                    description: `${cmds.length} perintah`,
+                                    id: `${prefix}menu ${cat}`
+                                }]
+                            })),
+                            has_multiple_buttons: true
+                        })
+                    }
+                ],
+                messageParamsJson: JSON.stringify({
+                    bottom_sheet: {
+                        in_thread_buttons_limit: 2,
+                        list_title: 'Pilih Kategori',
+                        button_title: 'Menu'
+                    }
+                })
+            }
         }
 
-        teks += `\nKetik ${prefix}menu <kategori>\n`
-        teks += `\n${footer}\n\`\`\``
+        await sock.sendMessage(jid, response, { quoted: m })
 
-        if (config.menuThumbnail) {
+        // ─── Kirim audio jika di-set owner ───────────────────────────────────
+        if (config.menuAudio) {
             try {
-                return await sock.sendMessage(jid, {
-                    image: { url: config.menuThumbnail },
-                    caption: teks
-                }, { quoted: m })
+                await sock.sendMessage(jid, {
+                    audio: { url: config.menuAudio },
+                    mimetype: 'audio/ogg; codecs=opus',
+                    ptt: true
+                })
             } catch {}
         }
-
-        await reply(teks)
     }
 }

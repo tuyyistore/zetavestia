@@ -4,6 +4,10 @@ export default {
     name: 'status',
     alias: ['cekbot', 'botinfo', 'info'],
     desc: 'Cek status lengkap bot',
+    usage: '.status',
+    info: 'Menampilkan info lengkap bot, sistem, dan memori',
+    updated: '29/03/2026',
+    author: 'dcodetuyyi',
     category: 'user',
 
     async exec(m, { reply, sock, config }) {

@@ -2,6 +2,10 @@ export default {
     name: 'kick',
     alias: ['keluarkan', 'remove'],
     desc: 'Kick member dari grup',
+    usage: '.kick @member',
+    info: 'Mengeluarkan member dari grup',
+    updated: '29/03/2026',
+    author: 'dcodetuyyi',
     category: 'admin',
     adminOnly: true,
 

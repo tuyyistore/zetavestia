@@ -5,6 +5,10 @@ export default {
     name: 'brat',
     alias: ['brattext'],
     desc: 'Buat sticker teks gaya brat',
+    usage: '.brat <teks>',
+    info: 'Membuat sticker teks gaya brat (aesthetic)',
+    updated: '29/03/2026',
+    author: 'dcodetuyyi',
     category: 'convert',
 
     async exec(m, { sock, jid, config, text }) {

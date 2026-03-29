@@ -3,6 +3,10 @@ import { writeFile } from 'fs/promises'
 export default {
     name: 'claimowner',
     desc: 'Claim owner via secret key (sekali pakai)',
+    usage: '.claimowner <secret>',
+    info: 'Klaim akses owner dengan secret key (sekali pakai)',
+    updated: '29/03/2026',
+    author: 'dcodetuyyi',
     category: 'owner',
 
     async exec(m, { reply, sender, config, text }) {

@@ -2,6 +2,10 @@ export default {
     name: 'setppgc',
     alias: ['setpp', 'setfoto'],
     desc: 'Ganti foto profil grup',
+    usage: '.setppgc (reply/kirim gambar)',
+    info: 'Mengganti foto profil grup',
+    updated: '29/03/2026',
+    author: 'dcodetuyyi',
     category: 'admin',
     adminOnly: true,
 

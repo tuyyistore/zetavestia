@@ -2,6 +2,10 @@ export default {
     name: 'add',
     alias: ['tambah'],
     desc: 'Add member ke grup',
+    usage: '.add <nomor>',
+    info: 'Menambahkan nomor ke dalam grup',
+    updated: '29/03/2026',
+    author: 'dcodetuyyi',
     category: 'admin',
     adminOnly: true,
 

@@ -2,6 +2,10 @@ export default {
     name: 'ping',
     alias: ['p', 'cek', 'speed'],
     desc: 'Cek kecepatan respon bot',
+    usage: '.ping',
+    info: 'Mengukur latensi dan uptime bot',
+    updated: '29/03/2026',
+    author: 'dcodetuyyi',
     category: 'user',
 
     async exec(m, { reply }) {

@@ -2,6 +2,10 @@ export default {
     name: 'antilink',
     alias: ['al'],
     desc: 'Aktifkan/nonaktifkan anti-link di grup',
+    usage: '.antilink on/off',
+    info: 'Aktifkan atau nonaktifkan fitur anti-link di grup',
+    updated: '29/03/2026',
+    author: 'dcodetuyyi',
     category: 'admin',
     adminOnly: true,
 

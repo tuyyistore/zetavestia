@@ -2,6 +2,10 @@ export default {
     name: 'promote',
     alias: ['jadikan admin'],
     desc: 'Jadikan member sebagai admin grup',
+    usage: '.promote @member',
+    info: 'Menjadikan member sebagai admin grup',
+    updated: '29/03/2026',
+    author: 'dcodetuyyi',
     category: 'admin',
     adminOnly: true,
 

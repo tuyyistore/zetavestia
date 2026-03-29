@@ -2,6 +2,10 @@ export default {
     name: 'unmute',
     alias: ['opengc'],
     desc: 'Unmute grup (semua bisa chat)',
+    usage: '.unmute',
+    info: 'Membuka grup agar semua member bisa chat',
+    updated: '29/03/2026',
+    author: 'dcodetuyyi',
     category: 'admin',
     adminOnly: true,
 

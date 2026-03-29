@@ -2,6 +2,10 @@ export default {
     name: 'grupinfo',
     alias: ['gcinfo', 'infogroup', 'infogrup'],
     desc: 'Lihat info grup',
+    usage: '.grupinfo',
+    info: 'Menampilkan detail info grup saat ini',
+    updated: '29/03/2026',
+    author: 'dcodetuyyi',
     category: 'user',
 
     async exec(m, { reply, sock, jid, config, isGroup }) {

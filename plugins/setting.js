@@ -2,6 +2,10 @@ export default {
     name: 'setting',
     alias: ['set', 'botset'],
     desc: 'Panel setting bot',
+    usage: '.setting [sub] [nilai]',
+    info: 'Panel konfigurasi bot (nama, prefix, footer, audio, dll)',
+    updated: '29/03/2026',
+    author: 'dcodetuyyi',
     category: 'owner',
     ownerOnly: true,
 
@@ -25,6 +29,7 @@ Owner       : ${config.ownerName || '-'}
 Nomor Owner : ${config.ownerNumber}
 Prefix      : ${config.prefix}
 Footer      : ${config.footer || '-'}
+Menu Audio  : ${config.menuAudio ? 'aktif' : 'nonaktif'}
 Session     : ${config.sessionName}
 Status      : Online
 Uptime      : ${h}j ${min}m ${s}d
@@ -34,6 +39,7 @@ Subcommand:
   .set prefix  <karakter>
   .set owner   <nama>
   .set footer  <teks>
+  .set audio   <url mp3>
   .set info
 \`\`\``)
         }
@@ -60,6 +66,21 @@ Subcommand:
             config.ownerName = val
             await saveData()
             return reply(`Nama owner diubah ke: ${val}`)
+        }
+
+        if (sub === 'audio') {
+            if (!val) {
+                const current = config.menuAudio || '-'
+                return reply(`Audio menu saat ini:\n${current}\n\nUntuk ubah: .set audio <url mp3>\nUntuk hapus: .set audio off`)
+            }
+            if (val === 'off' || val === 'hapus' || val === 'kosong') {
+                config.menuAudio = ''
+                await saveData()
+                return reply('Audio menu dinonaktifkan.')
+            }
+            config.menuAudio = val
+            await saveData()
+            return reply(`Audio menu diubah ke:\n${val}`)
         }
 
         if (sub === 'footer') {

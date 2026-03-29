@@ -2,6 +2,10 @@ export default {
     name: 'mute',
     alias: ['closegc'],
     desc: 'Mute grup (hanya admin yang bisa chat)',
+    usage: '.mute',
+    info: 'Menutup grup agar hanya admin yang bisa chat',
+    updated: '29/03/2026',
+    author: 'dcodetuyyi',
     category: 'admin',
     adminOnly: true,
 

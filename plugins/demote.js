@@ -2,6 +2,10 @@ export default {
     name: 'demote',
     alias: ['deadmin'],
     desc: 'Cabut admin member dari grup',
+    usage: '.demote @member',
+    info: 'Mencabut status admin dari member',
+    updated: '29/03/2026',
+    author: 'dcodetuyyi',
     category: 'admin',
     adminOnly: true,
 

@@ -4,6 +4,10 @@ export default {
     name: 'tiktok',
     alias: ['tt', 'ttdl'],
     desc: 'Download video TikTok',
+    usage: '.tiktok <link>',
+    info: 'Download video TikTok tanpa watermark',
+    updated: '29/03/2026',
+    author: 'dcodetuyyi',
     category: 'download',
 
     async exec(m, { reply, config, args, sock, jid }) {

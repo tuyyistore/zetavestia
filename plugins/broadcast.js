@@ -2,6 +2,10 @@ export default {
     name: 'broadcast',
     alias: ['bc'],
     desc: 'Kirim pesan ke semua grup',
+    usage: '.broadcast <pesan>',
+    info: 'Kirim pesan ke semua grup yang diikuti bot',
+    updated: '29/03/2026',
+    author: 'dcodetuyyi',
     category: 'owner',
     ownerOnly: true,
 

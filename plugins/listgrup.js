@@ -2,6 +2,10 @@ export default {
     name: 'listgrup',
     alias: ['listgroup', 'gruplist'],
     desc: 'Lihat semua grup yang diikuti bot',
+    usage: '.listgrup',
+    info: 'Melihat daftar semua grup yang diikuti bot',
+    updated: '29/03/2026',
+    author: 'dcodetuyyi',
     category: 'owner',
     ownerOnly: true,
 
